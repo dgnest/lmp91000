@@ -21,7 +21,9 @@ def send_cmd(cmd):
 if __name__ == '__main__':
     ser = setup()
     while True:
-        cmd = raw_input("Enter command: ")
+        cmd = raw_input(
+            "Enter commands [w:write / r:read / a:read analog data / q:quit]: "
+        )
         if cmd == 'r':
             send_cmd('S00ss')
         if cmd == 'w':
