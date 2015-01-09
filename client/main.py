@@ -13,7 +13,7 @@ def setup():
 
 
 def send_cmd(cmd):
-    ser.write(cmd)
+    ser.write(cmd + "E")
     line = ser.readline()
     print line
 
@@ -23,11 +23,11 @@ if __name__ == '__main__':
     while True:
         cmd = raw_input("Enter command: ")
         if cmd == 'r':
-            send_cmd('S00ss0')
+            send_cmd('S00ss')
         if cmd == 'w':
-            send_cmd('S23456')
+            send_cmd('S2345')
         if cmd == 'a':
-            send_cmd('S1a1fs')
+            send_cmd('S1a1f')
         if cmd == 'q':
             break
     try:
