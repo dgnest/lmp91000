@@ -1,20 +1,29 @@
 #include <Wire.h>
 
 
-const byte SENSOR_ADDRESS = B1001000;
+const byte kSensorAddress = B1001000;
 
+const int kFrameLength = 6;
 String input_frame;
 boolean processed_frame = false;
+
 
 char frame_byte;
 int frame_counter = 0;
 
 // The frame has the following structure.
-char option;
-char id;
-char address;
-char value;
+// [Start('S'), option, id, address, value, Stop('\n')]
+const char kStartFrame = 'S';
+const char kStop = 'E';
 
+struct Frame {
+  char option;
+  char id;
+  char address;
+  char value;
+};
+
+Frame frame;
 
 void setup() {
   Serial.begin(9600);
@@ -30,12 +39,13 @@ void loop() {
 }
 
 void serialEvent() {
+
   while (Serial.available() > 0) {
     frame_byte = (char)Serial.read();
-    if (frame_byte == 'S' || frame_counter > 0) {
+    if (frame_byte == kStartFrame || frame_counter > 0) {
       frame_counter++;
       input_frame += frame_byte;
-      if (frame_counter == 6) {
+      if (frame_counter == kFrameLength) {
         processed_frame = true;
         frame_counter = 0;
       }
@@ -44,10 +54,10 @@ void serialEvent() {
 }
 
 void parseString(String s) {
-  if (s[5] == '\n') {
-    option = s[1];
-    id = s[2];
-    address = s[3];
-    value = s[4];
+  if (s[kFrameLength - 1] == kStop) {
+    frame.option = s[1];
+    frame.id = s[2];
+    frame.address = s[3];
+    frame.value = s[4];
   }
 }
