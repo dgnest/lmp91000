@@ -25,11 +25,11 @@ if __name__ == '__main__':
             "Enter commands [w:write / r:read / a:read analog data / q:quit]: "
         )
         if cmd == 'r':
-            send_cmd('S00ss')
+            send_cmd('Sr029')
         if cmd == 'w':
-            send_cmd('S2345')
+            send_cmd('Sw045')
         if cmd == 'a':
-            send_cmd('S1a1f')
+            send_cmd('Sa01f')
         if cmd == 'q':
             break
     try:
