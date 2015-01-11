@@ -1,6 +1,7 @@
-#include "Frame.h"
+#include <Wire.h>
 
-const byte kSensorAddress = B1001000;
+#include "Frame.h"
+#include "lmp91000.h"
 
 String input_frame;
 boolean processed_frame = false;
@@ -11,10 +12,11 @@ int frame_counter = 0;
 // The frame has the following structure.
 // [Start('S'), option, id, address, value, Stop('\n')]
 Frame frame;
-
+GasSensor sensor;
 
 void setup() {
   Serial.begin(9600);
+  Wire.begin();
 }
 
 void loop() {
@@ -22,11 +24,20 @@ void loop() {
     frame.set_frame(input_frame);
     Serial.print(frame.frame());
 
-    frame.ParseFrame();
-    // Serial.print(frame.value());
-    // Serial.print(frame.address());
-    // Serial.print(frame.id());
-    // Serial.print(frame.option());
+    frame.parseFrame();
+
+    switch (frame.option()) {
+      case 'w':
+        GasSensor::writeRegister(frame.address(), frame.value());
+        Serial.print('w');
+        break;
+      case 'r':
+        Serial.print('r');
+        break;
+      case 'a':
+        Serial.print('a');
+        break;
+    }
 
     input_frame = "";
     processed_frame = false;

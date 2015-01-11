@@ -1,6 +1,6 @@
 /*
   Frame.cpp - Library to handle a frame with the following structure:
-  [Start('S'), option, id, address, value, Stop('\n')]
+  [Start('S'), option, id, address, value, Stop('E')]
 */
 
 #include "Arduino.h"
@@ -46,7 +46,7 @@ void Frame::set_value(char value) {
   value_ = value;
 }
 
-void Frame::ParseFrame() {
+void Frame::parseFrame() {
   if (frame().charAt(frame().length() - 1) == kStop) {
     set_option(frame_[1]);
     set_id(frame_[2]);
