@@ -1,42 +1,10 @@
 /*
-  Frame.h - Library to handle the following structure:
+  Frame.cpp - Library to handle a frame with the following structure:
   [Start('S'), option, id, address, value, Stop('\n')]
 */
 
-#ifndef frame_h
-#define frame_h
-
 #include "Arduino.h"
-
-class Frame {
- public:
-  String frame();
-  char option();
-  char id();
-  char address();
-  char value();
-  void set_frame(String frame);
-  void set_option(char option);
-  void set_id(char id);
-  void set_address(char address);
-  void set_value(char value);
-
-  void ParseFrame();
-
-  static const int kFrameLength = 6;
-  static const char kStartFrame = 'S';
-  static const char kStop = 'E';
-
-
- private:
-  String frame_;
-
-  char option_;
-  char id_;
-  char address_;
-  char value_;
-};
-
+#include "Frame.h"
 
 String Frame::frame() {
   return frame_;
@@ -86,5 +54,3 @@ void Frame::ParseFrame() {
     set_value(frame_[4]);
   }
 }
-
-#endif frame_h
