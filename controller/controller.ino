@@ -25,10 +25,13 @@ void loop() {
     Serial.print(frame.frame());
 
     frame.parseFrame();
+    sensor.set_id(frame.id());
+    sensor.set_pin_menb(13);
 
     switch (frame.option()) {
       case 'w':
-        GasSensor::writeRegister(frame.address(), frame.value());
+        sensor.set_current_register(frame.address(), frame.value());
+        sensor.writeRegister();
         Serial.print('w');
         break;
       case 'r':
