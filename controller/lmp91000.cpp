@@ -28,6 +28,17 @@ void Register::set_value(byte value) {
 
 // GasSensor Class.
 
+// Constructor.
+GasSensor::GasSensor() {
+  set_id(0);
+  set_pin_menb(0);
+}
+
+GasSensor::GasSensor(int id, int pin_menb) {
+  set_id(id);
+  set_pin_menb(pin_menb);
+}
+
 // Gets the sensor id.
 int GasSensor::id() {
   return id_;
@@ -73,60 +84,62 @@ void GasSensor::set_current_register(byte address, byte value) {
 }
 
 // I2C write method.
-void GasSensor::writeRegister() {
-
-  /* TODO: change pin_menb to LOW for enabled */
-  digitalWrite(pin_menb(), HIGH);
-  
-  // Ready.
-  Wire.beginTransmission(kSensorAddress);
-  Wire.write(byte(0x00));
-  Wire.write(byte(0x01));
-  Wire.endTransmission();
-  
-  // Mode - unlock write mode.
-  Wire.beginTransmission(kSensorAddress);
-  Wire.write(byte(0x01));
-  Wire.write(byte(0x00));
-  Wire.endTransmission();
-
-  // Data.
-  Wire.beginTransmission(kSensorAddress);
-  // Wire.write(current_register().address());
-  Wire.write(byte(0x10));
-  // Wire.write(current_register().value());
-  Wire.write(byte(0xF0));
-  Wire.endTransmission();
-
+void GasSensor::writeRegister(byte address, byte value) {
+  // Change pin_menb to LOW to enable.
   digitalWrite(pin_menb(), LOW);
+
+  // Status Register. Ready to accept I2C commands.
+  Wire.beginTransmission(kSensorAddress);
+  Wire.write(byte(0x00));
+  Wire.write(byte(0x01));
+  Wire.endTransmission();
+
+  // Lock Register. Unlock write mode.
+  Wire.beginTransmission(kSensorAddress);
+  Wire.write(byte(0x01));
+  Wire.write(byte(0x00));
+  Wire.endTransmission();
+
+  // Write Register.
+  Wire.beginTransmission(kSensorAddress);
+  Wire.write(address);
+  Wire.write(value);
+  Wire.endTransmission();
+
+  // Change pin_menb to HIGH to disable.
+  digitalWrite(pin_menb(), HIGH);
 }
 
-
 // I2C read method.
-byte GasSensor::readRegister() {
-  digitalWrite(pin_menb(), HIGH);
+byte GasSensor::readRegister(byte address) {
+  // Change pin_menb to LOW to enable.
+  digitalWrite(pin_menb(), LOW);
 
-  // Mode - unlock write mode.
+  // Status Register. Ready to accept I2C commands.
+  Wire.beginTransmission(kSensorAddress);
+  Wire.write(byte(0x00));
+  Wire.write(byte(0x01));
+  Wire.endTransmission();
+
+  // Lock Register. Read only mode.
   Wire.beginTransmission(kSensorAddress);
   Wire.write(byte(0x01));
   Wire.write(byte(0x01));
   Wire.endTransmission();
 
-  // Get value for 0x10 register.
+  // Get value of the register with address given.
   Wire.beginTransmission(kSensorAddress);
-  Wire.write(byte(0x10));
+  Wire.write(address);
   Wire.endTransmission();
-
+  // Request only one byte.
   Wire.requestFrom((int) kSensorAddress, 1);
   byte reading = 0x00;
-
-  // If one byte were received.
-  if(1 <= Wire.available())
-  {
+  // If one byte is received.
+  if (1 <= Wire.available())
     reading = Wire.read();
-  }
 
-  digitalWrite(pin_menb(), LOW);
+  // Change pin_menb to HIGH to disable.
+  digitalWrite(pin_menb(), HIGH);
 
   return reading;
 }

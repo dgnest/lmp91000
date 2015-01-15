@@ -23,6 +23,10 @@ class Register {
 
 class GasSensor {
  public:
+  // Constructor.
+  GasSensor();
+  GasSensor(int id, int pin_menb);
+
   // Gets the sensor id.
   int id();
   // Gets the MENB status an its pin.
@@ -41,8 +45,8 @@ class GasSensor {
   void set_current_register(byte address, byte value);
 
   // I2C write method.
-  void writeRegister();
-  byte readRegister();
+  void writeRegister(byte address, byte value);
+  byte readRegister(byte address);
 
   static const byte kSensorAddress = B1001000;
 
