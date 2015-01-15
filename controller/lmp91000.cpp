@@ -74,10 +74,59 @@ void GasSensor::set_current_register(byte address, byte value) {
 
 // I2C write method.
 void GasSensor::writeRegister() {
+
+  /* TODO: change pin_menb to LOW for enabled */
   digitalWrite(pin_menb(), HIGH);
+  
+  // Ready.
   Wire.beginTransmission(kSensorAddress);
-  Wire.write(current_register().address());
-  Wire.write(current_register().address());
+  Wire.write(byte(0x00));
+  Wire.write(byte(0x01));
   Wire.endTransmission();
+  
+  // Mode - unlock write mode.
+  Wire.beginTransmission(kSensorAddress);
+  Wire.write(byte(0x01));
+  Wire.write(byte(0x00));
+  Wire.endTransmission();
+
+  // Data.
+  Wire.beginTransmission(kSensorAddress);
+  // Wire.write(current_register().address());
+  Wire.write(byte(0x10));
+  // Wire.write(current_register().value());
+  Wire.write(byte(0xF0));
+  Wire.endTransmission();
+
   digitalWrite(pin_menb(), LOW);
+}
+
+
+// I2C read method.
+byte GasSensor::readRegister() {
+  digitalWrite(pin_menb(), HIGH);
+
+  // Mode - unlock write mode.
+  Wire.beginTransmission(kSensorAddress);
+  Wire.write(byte(0x01));
+  Wire.write(byte(0x01));
+  Wire.endTransmission();
+
+  // Get value for 0x10 register.
+  Wire.beginTransmission(kSensorAddress);
+  Wire.write(byte(0x10));
+  Wire.endTransmission();
+
+  Wire.requestFrom((int) kSensorAddress, 1);
+  byte reading = 0x00;
+
+  // If one byte were received.
+  if(1 <= Wire.available())
+  {
+    reading = Wire.read();
+  }
+
+  digitalWrite(pin_menb(), LOW);
+
+  return reading;
 }

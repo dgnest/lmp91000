@@ -42,6 +42,7 @@ class GasSensor {
 
   // I2C write method.
   void writeRegister();
+  byte readRegister();
 
   static const byte kSensorAddress = B1001000;
 

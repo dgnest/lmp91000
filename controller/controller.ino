@@ -27,14 +27,15 @@ void loop() {
     frame.parseFrame();
     sensor.set_id(frame.id());
     sensor.set_pin_menb(13);
+    sensor.set_current_register(frame.address(), frame.value());
 
     switch (frame.option()) {
       case 'w':
-        sensor.set_current_register(frame.address(), frame.value());
         sensor.writeRegister();
         Serial.print('w');
         break;
       case 'r':
+        Serial.print(sensor.readRegister(), HEX);
         Serial.print('r');
         break;
       case 'a':
