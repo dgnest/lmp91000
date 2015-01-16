@@ -5,49 +5,53 @@
 
 #include "Arduino.h"
 #include "Frame.h"
+#include <StandardCplusplus.h>
+#include <vector>
 
-String Frame::frame() {
+using namespace std;
+
+vector<byte> Frame::frame() {
   return frame_;
 }
 
-char Frame::option() {
+byte Frame::option() {
   return option_;
 }
 
-char Frame::id() {
+byte Frame::id() {
   return id_;
 }
 
-char Frame::address() {
+byte Frame::address() {
   return address_;
 }
 
-char Frame::value() {
+byte Frame::value() {
   return value_;
 }
 
-void Frame::set_frame(String frame) {
+void Frame::set_frame(vector<byte> frame) {
   frame_ = frame;
 }
 
-void Frame::set_option(char option) {
+void Frame::set_option(byte option) {
   option_ = option;
 }
 
-void Frame::set_id(char id) {
+void Frame::set_id(byte id) {
   id_ = id;
 }
 
-void Frame::set_address(char address) {
+void Frame::set_address(byte address) {
   address_ = address;
 }
 
-void Frame::set_value(char value) {
+void Frame::set_value(byte value) {
   value_ = value;
 }
 
 void Frame::parseFrame() {
-  if (frame().charAt(frame().length() - 1) == kStop) {
+  if (frame().at(frame().size() - 1) == kStop) {
     set_option(frame_[1]);
     set_id(frame_[2]);
     set_address(frame_[3]);

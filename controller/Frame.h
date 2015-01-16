@@ -7,34 +7,38 @@
 #define Frame_h
 
 #include "Arduino.h"
+#include <StandardCplusplus.h>
+#include <vector>
+
+using namespace std;
 
 class Frame {
  public:
-  String frame();
-  char option();
-  char id();
-  char address();
-  char value();
-  void set_frame(String frame);
-  void set_option(char option);
-  void set_id(char id);
-  void set_address(char address);
-  void set_value(char value);
+  vector<byte> frame();
+  byte option();
+  byte id();
+  byte address();
+  byte value();
+  void set_frame(vector<byte> frame);
+  void set_option(byte option);
+  void set_id(byte id);
+  void set_address(byte address);
+  void set_value(byte value);
 
   void parseFrame();
 
   static const int kFrameLength = 6;
-  static const char kStartFrame = 'S';
-  static const char kStop = 'E';
+  static const byte kStartFrame = 'S';
+  static const byte kStop = 'E';
 
 
  private:
-  String frame_;
+  vector<byte> frame_;
 
-  char option_;
-  char id_;
-  char address_;
-  char value_;
+  byte option_;
+  byte id_;
+  byte address_;
+  byte value_;
 };
 
 #endif Frame_h

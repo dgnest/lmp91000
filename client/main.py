@@ -11,7 +11,6 @@ def setup():
     time.sleep(2)
     return ser
 
-
 def send_cmd(cmd):
     ser.write(cmd + "E")
     line = ser.readline()
@@ -25,13 +24,37 @@ if __name__ == '__main__':
             "Enter commands [w:write / r:read / a:read analog data / q:quit]: "
         )
         if cmd == 'r':
-            send_cmd('Sr029')
+            # Send Init + command bytes.
+            ser.write("Sr")
+            # Sensor id.
+            ser.write(chr(1))
+            # Address.
+            ser.write(chr(0x10))
+            # Value.
+            ser.write(chr(0x00))
+            # Send stop byte.
+            ser.write("E")
         if cmd == 'w':
-            send_cmd('Sw045')
+            # send_cmd('Sw045')
+
+            # Send Init + command bytes.
+            ser.write('S')
+            ser.write('w')
+            # Sensor id.
+            ser.write(chr(1))
+            # Address.
+            ser.write(chr(0x10))
+            # Value.
+            ser.write(chr(0xFF))
+            # Send stop byte
+            ser.write('E')
         if cmd == 'a':
             send_cmd('Sa01f')
         if cmd == 'q':
             break
+        
+        line = ser.readline()
+        print line
     try:
         ser.close()
         print "\nPort closed. Bye..."
